@@ -1,5 +1,6 @@
 package org.acme;
 
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -15,8 +16,12 @@ public class GreetingResource {
      * @return A greeting message in plain text format.
      */
     @GET // HTTP GET method
+    @Transactional // Ensures that the method runs within a transaction
     @Produces(MediaType.TEXT_PLAIN) // Produces plain text response
     public String hello(@RestQuery String name) { // @RestQuery - Binds the query parameter 'name' from the request URL to the method parameter
+        Greeting greeting =new Greeting();
+        greeting.name=name;
+        greeting.persist(); // Persist the Greeting entity to the database
         return "Hello " + name;
     }
 }
